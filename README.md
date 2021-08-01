@@ -1,7 +1,7 @@
 # Fix Your Animators
 Author: Joshuarox100
 
-Description: Quick Fix for Older Animators in Unity 2019.4.29f1
+Description: Quick Fix for Animators in Unity 2019.4.29f1
 
 ## Installation Guide
 To install, download the source code by clicking the green 'Code' button above and select 'Download ZIP'.
