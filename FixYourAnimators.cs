@@ -7,8 +7,6 @@ using UnityEngine;
 [InitializeOnLoad]
 public class FixYourAnimatorsMore : ScriptableObject
 {
-    static FixYourAnimatorsMore m_Instance = null;
-
     private static System.Type[] types = new System.Type[]
     {
         typeof(AnimatorState),
@@ -21,22 +19,9 @@ public class FixYourAnimatorsMore : ScriptableObject
 
     static FixYourAnimatorsMore()
     {
-        EditorApplication.update += OnInit;
+        Selection.selectionChanged += FixDuplicatePaste;
+        EditorApplication.quitting += RemoveDelegate;
     }
-    static void OnInit()
-    {
-        if (!EditorApplication.isUpdating && !EditorApplication.isCompiling)
-        {
-            EditorApplication.update -= OnInit;
-            m_Instance = FindObjectOfType<FixYourAnimatorsMore>();
-            if (m_Instance == null && !EditorApplication.isPlayingOrWillChangePlaymode)
-            {
-                m_Instance = CreateInstance<FixYourAnimatorsMore>();
-                Selection.selectionChanged += FixDuplicatePaste;
-                EditorApplication.quitting += RemoveDelegate;
-            }
-        }
-    }    
 
     public static void RemoveDelegate()
     {
