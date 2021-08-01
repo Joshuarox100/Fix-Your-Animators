@@ -60,12 +60,12 @@ public static class FixYourAnimators
         for (int i = 0; i < controllerGUIDS.Length; i++)
         {
             AnimatorController source = (AnimatorController)AssetDatabase.LoadAssetAtPath(AssetDatabase.GUIDToAssetPath(controllerGUIDS[i]), typeof(AnimatorController));
-            EditorUtility.DisplayProgressBar("Fixing Your Animators...", "Fixing " + source.name, 0.01f + (0.99f * (i / (controllerGUIDS.Length - 1f))));
-
+            
             // Not an Animator Controller, skip.
             if (source == null)
                 continue;
-
+            
+            EditorUtility.DisplayProgressBar("Fixing Your Animators...", "Fixing " + source.name, 0.01f + (0.99f * (i / (controllerGUIDS.Length - 1f))));
             EditorUtility.SetDirty(source);
             foreach (AnimatorControllerLayer layer in source.layers)
                 FixTheMachines(layer.stateMachine);
