@@ -31,16 +31,16 @@ public class FixYourAnimatorsMore : ScriptableObject
 
     public static void FixDuplicatePaste()
     {
-        if (Selection.activeObject != null && types.Contains(Selection.activeObject.GetType()))
+        bool flag = false;
+        foreach (Object @object in Selection.objects.Where(obj => types.Contains(obj.GetType()) && obj.hideFlags == (HideFlags.HideInHierarchy | HideFlags.HideInInspector)))
         {
-            if (Selection.activeObject.hideFlags == (HideFlags.HideInHierarchy | HideFlags.HideInInspector))
-            {
-                if (AssetDatabase.GetAssetPath(Selection.activeInstanceID).Length != 0)
-                    EditorUtility.SetDirty(Selection.activeObject);
-                Selection.activeObject.hideFlags = HideFlags.HideInHierarchy;
-                Selection.selectionChanged();
-            }
+            if (AssetDatabase.GetAssetPath(@object).Length != 0)
+                EditorUtility.SetDirty(@object);
+            @object.hideFlags = HideFlags.HideInHierarchy;
+            flag = true;
         }
+        if (flag)
+            Selection.selectionChanged();
     }
 }
 
