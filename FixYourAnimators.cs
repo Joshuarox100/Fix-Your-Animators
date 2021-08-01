@@ -1,8 +1,65 @@
-﻿using UnityEditor;
+﻿#if UNITY_EDITOR
+using System.Linq;
+using UnityEditor;
 using UnityEditor.Animations;
 using UnityEngine;
 
-public class FixYourAnimators
+[InitializeOnLoad]
+public class FixYourAnimatorsMore : ScriptableObject
+{
+    static FixYourAnimatorsMore m_Instance = null;
+
+    private static System.Type[] types = new System.Type[]
+    {
+        typeof(AnimatorState),
+        typeof(AnimatorStateMachine),
+        typeof(StateMachineBehaviour),
+        typeof(AnimatorStateTransition),
+        typeof(AnimatorTransition),
+        typeof(BlendTree)
+    };
+
+    static FixYourAnimatorsMore()
+    {
+        EditorApplication.update += OnInit;
+    }
+    static void OnInit()
+    {
+        if (!EditorApplication.isUpdating && !EditorApplication.isCompiling)
+        {
+            EditorApplication.update -= OnInit;
+            m_Instance = FindObjectOfType<FixYourAnimatorsMore>();
+            if (m_Instance == null && !EditorApplication.isPlayingOrWillChangePlaymode)
+            {
+                m_Instance = CreateInstance<FixYourAnimatorsMore>();
+                Selection.selectionChanged += FixDuplicatePaste;
+                EditorApplication.quitting += RemoveDelegate;
+            }
+        }
+    }    
+
+    public static void RemoveDelegate()
+    {
+        Selection.selectionChanged -= FixDuplicatePaste;
+        EditorApplication.quitting -= RemoveDelegate;
+    }
+
+    public static void FixDuplicatePaste()
+    {
+        if (Selection.activeInstanceID != 0 && types.Contains(EditorUtility.InstanceIDToObject(Selection.activeInstanceID).GetType()))
+        {
+            if (EditorUtility.InstanceIDToObject(Selection.activeInstanceID).hideFlags == (HideFlags.HideInHierarchy | HideFlags.HideInInspector))
+            {
+                if (AssetDatabase.GetAssetPath(Selection.activeInstanceID).Length != 0)
+                    EditorUtility.SetDirty(Selection.activeObject);
+                EditorUtility.InstanceIDToObject(Selection.activeInstanceID).hideFlags = HideFlags.HideInHierarchy;
+                Selection.selectionChanged();
+            }
+        }
+    }
+}
+
+public static class FixYourAnimators
 {
     // Update all Animator Controllers to use HideFlags of 1 instead of 3.
     [MenuItem("Tools/Joshuarox100/Fix Your Animators", priority = 3)]
@@ -57,3 +114,4 @@ public class FixYourAnimators
             machineBehavior.hideFlags = HideFlags.HideInHierarchy;
     }
 }
+#endif
