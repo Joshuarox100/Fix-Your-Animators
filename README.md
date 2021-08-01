@@ -10,4 +10,4 @@ After you have downloaded the ZIP file, extract it into a folder in your Unity p
 ## How to Use
 Click the option underneath 'Tools -> Joshuarox100 -> Fix Your Animators' to fix all Animator Controllers in your project at once. After running this script, States, Transitions, or other Animator Controller related objects should be inspectable again. 
 
-Additionally, when this script is present, any new States, Transitions, or the like will automatically be corrected when you try to inspect them.
+Additionally, when this script is present, any new States, Transitions, or other Animator Controller related objects will automatically have their HideFlags be corrected when you try to inspect them if needed.
