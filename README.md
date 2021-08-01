@@ -8,6 +8,6 @@ To install, download the source code by clicking the green 'Code' button above a
 After you have downloaded the ZIP file, extract it into a folder in your Unity project.
 
 ## How to Use
-Click the option underneath 'Tools -> Joshuarox100 -> Fix Your Animators'.
+Click the option underneath 'Tools -> Joshuarox100 -> Fix Your Animators' to fix all Animator Controllers in your project at once. After running this script, States, Transitions, or other Animator Controller related objects should be inspectable again. 
 
-After running this script, States, Transitions, or other Animator Controller related objects should be inspectable again. Additionally, any new assets with this issue will be autofixed immediately when they are inspected.
+Additionally, when this script is present, any new States, Transitions, or the like will automatically be corrected when you try to inspect them.
