@@ -1,7 +1,7 @@
 # Fix Your Animators
 Author: Joshuarox100
 
-Description: Quick Fix for Animators in Unity 2019.4.29f1. This serves as a workaround to a bug that occurs when duplicating or pasting Animator Controller subassets. When subassets are created this way, their HideFlags are improperly set to make them uninspectable. This script will correct the HideFlags of these subassets when the user attempts to inspect them.
+Description: Quick Fix for Animators in Unity 2019.4.29f1. This serves as a workaround for a bug that occurs when duplicating or pasting Animator Controller subassets. When subassets are created this way, their HideFlags are improperly set to make them uninspectable. This script will correct the HideFlags of these subassets when the user attempts to inspect them.
 
 ## Installation Guide
 To install, download the source code by clicking the green 'Code' button above and select 'Download ZIP'.
