@@ -5,7 +5,7 @@ using UnityEditor.Animations;
 using UnityEngine;
 
 [InitializeOnLoad]
-public class FixYourAnimatorsMore : ScriptableObject
+public class FixYourAnimators : ScriptableObject
 {
     private static System.Type[] types = new System.Type[]
     {
@@ -17,19 +17,20 @@ public class FixYourAnimatorsMore : ScriptableObject
         typeof(BlendTree)
     };
 
-    static FixYourAnimatorsMore()
+    static FixYourAnimators()
     {
-        Selection.selectionChanged += FixDuplicatePaste;
+        Selection.selectionChanged += AutofixHideFlags;
         EditorApplication.quitting += RemoveDelegate;
     }
 
     public static void RemoveDelegate()
     {
-        Selection.selectionChanged -= FixDuplicatePaste;
+        Selection.selectionChanged -= AutofixHideFlags;
         EditorApplication.quitting -= RemoveDelegate;
     }
 
-    public static void FixDuplicatePaste()
+    // Automatically corrects HideFlags for objects with types included in 'types' when trying to inspect them.
+    public static void AutofixHideFlags()
     {
         bool flag = false;
         foreach (Object @object in Selection.objects.Where(obj => types.Contains(obj.GetType()) && obj.hideFlags == (HideFlags.HideInHierarchy | HideFlags.HideInInspector)))
@@ -42,13 +43,10 @@ public class FixYourAnimatorsMore : ScriptableObject
         if (flag)
             Selection.selectionChanged();
     }
-}
 
-public static class FixYourAnimators
-{
     // Update all Animator Controllers to use HideFlags of 1 instead of 3.
-    [MenuItem("Tools/Joshuarox100/Fix Your Animators", priority = 3)]
-    public static void FixTheAnimators()
+    [MenuItem("Tools/Joshuarox100/Fix Your Animators", priority = 1100)]
+    public static void FixAllAnimators()
     {
         if (!EditorUtility.DisplayDialog("Fix Your Animators", "This will find and modify all Animator Controllers in your project to fix HideFlags.\nProceed?", "Yes", "Cancel"))
             return;
@@ -60,15 +58,15 @@ public static class FixYourAnimators
         for (int i = 0; i < controllerGUIDS.Length; i++)
         {
             AnimatorController source = (AnimatorController)AssetDatabase.LoadAssetAtPath(AssetDatabase.GUIDToAssetPath(controllerGUIDS[i]), typeof(AnimatorController));
-            
+
             // Not an Animator Controller, skip.
             if (source == null)
                 continue;
-            
+
             EditorUtility.DisplayProgressBar("Fixing Your Animators...", "Fixing " + source.name, 0.01f + (0.99f * (i / (controllerGUIDS.Length - 1f))));
             EditorUtility.SetDirty(source);
             foreach (AnimatorControllerLayer layer in source.layers)
-                FixTheMachines(layer.stateMachine);
+                FixAllAnimatorsHelper(layer.stateMachine);
         }
         EditorUtility.DisplayProgressBar("Fixing Your Animators...", "Final Save", 1f);
         AssetDatabase.SaveAssets();
@@ -76,11 +74,11 @@ public static class FixYourAnimators
         EditorUtility.ClearProgressBar();
     }
 
-    private static void FixTheMachines(AnimatorStateMachine machine)
+    private static void FixAllAnimatorsHelper(AnimatorStateMachine machine)
     {
         machine.hideFlags = HideFlags.HideInHierarchy;
         foreach (var subStateMachine in machine.stateMachines)
-            FixTheMachines(subStateMachine.stateMachine);
+            FixAllAnimatorsHelper(subStateMachine.stateMachine);
         foreach (var childState in machine.states)
         {
             childState.state.hideFlags = HideFlags.HideInHierarchy;
