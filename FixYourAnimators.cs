@@ -19,21 +19,21 @@ public class FixYourAnimators : ScriptableObject
 
     static FixYourAnimators()
     {
-        Selection.selectionChanged += AutofixHideFlags;
+        Selection.selectionChanged += AutoFixHideFlags;
         EditorApplication.quitting += RemoveDelegate;
     }
 
     public static void RemoveDelegate()
     {
-        Selection.selectionChanged -= AutofixHideFlags;
+        Selection.selectionChanged -= AutoFixHideFlags;
         EditorApplication.quitting -= RemoveDelegate;
     }
 
     // Automatically corrects HideFlags for objects with types included in 'types' when trying to inspect them.
-    public static void AutofixHideFlags()
+    public static void AutoFixHideFlags()
     {
         bool flag = false;
-        foreach (Object @object in Selection.objects.Where(obj => types.Contains(obj.GetType()) && obj.hideFlags == (HideFlags.HideInHierarchy | HideFlags.HideInInspector)))
+        foreach (Object @object in Selection.objects.Where(obj => obj.hideFlags == (HideFlags.HideInHierarchy | HideFlags.HideInInspector) && types.Contains(obj.GetType())))
         {
             if (AssetDatabase.GetAssetPath(@object).Length != 0)
                 EditorUtility.SetDirty(@object);
